@@ -1,0 +1,23 @@
+1. Gov.com is a website that has many datasets available from the Government. You can find data, tools and research to be able to develop web/mobile apps and more. 
+
+2. Under most viewed datasets there are 402,363 datasets listed
+
+3. When selecting the Human Health category, there was a total of 50 datasets found. The majority of these datasets included information about food, livestock, births, agriculture and air research. I believe all of this fits under Human Health because each of these areas affects a person's well-being. What we eat, the environment we live in, and the conditions we're born into (let's not forget birthing deaths) all play a orle in our overall health, so it makes sense that these topics are included in his category.
+
+4. When you open the Food Price Outlook page you see the dataset's main catalog page that explain what the dataset is about, who published it, when it was updated, and it has a excel link available to download. To find additional USDA datasets you can click on Data.gov icon on the upper left of the page or at the bottom of the page. You can also click on the little home icon under "Data Catalog" or simply click on "Datasets" next to the home icon on the upper right side of the page. There are many options.
+
+5. --
+
+6. When I searched "Chicago Cook Illinois" I got no results, when I looked up "Chicago" I got 1091 Datasets returned under "City of Chicago". Within that search result I looked up "Cook" and got 47 dataset results.
+
+7. a. When searching "Food composition" the top three results were Composition of Foods Raw, Processed, Prepared USDA National Nutrient Database for Standard Reference, Key Foods and FoodData Central. When searching "Nutrition" the top three results were Team Nutrition Resource Catalog, Nutrition Assistance Programs Keydata, and Nutrition Assistance Programs Performance Report. So although the initial search did result in nutrition information the second result resulted in datasets that contained "nutrition" in the title.
+
+8. a. When I searched butter in webpage the FoodData Central directed me to, I got 5 results:
+	1. Almond butter,creamy
+	2. Butter,stick,salted
+	3. Butter,stick,unsalted
+	4. Peanut butter,creamy
+	5. Sesame butter, creamy
+The results have the following categories: NDB Number, Description, Most Recent Acquisition Date, SR/Foundation, and Food Category. When I click on a result it shows me the components of said item. It shows it's nutritional value per portion (it is automatically set to 100g but you can change this by a drop box menu provided). The page also provides a section that includes individual samples (where the got data from) and other information (that includes links).
+
+8. b. Under Foundation Foods there are different download types like Latest Downloads, Historical Downloads and Releases. Download files are in CSV/JSON and range in size from 952K in Zipped (16M unzipped) to 458M Zipped (3.1G Unzipped). Under the documentation section it says "View data type documentation for each of FoodData Central's data types. Documentation for the JSON format can be found through our API guide on SwaggerHub." and it provides links that redirect you to different datatypes.
