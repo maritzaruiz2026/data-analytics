@@ -1,0 +1,26 @@
+1. What conclusion can you reach about the responses to this question?
+All answers were answered differently (especially if it was a text box to input a written answer).
+
+2. Is the default summary or visualization helpful? How could it be improved?
+The initial visualization is a word cloud which gives us a quick overview of what was a common answer (but not accurate as many answers were similar, just not typed exact).
+
+3. For questions with an “Other” option, where can you find the actual text of those responses? Do you notice anything that might be tricky about analyzing these?
+N/A
+
+4. For questions calling for a written response, what challenges do you notice about finding trends or patterns in the answers provided?
+Not all answers follow the same format. Whether it's typed fully or an abbreviation or even the form of measurement for height. DOB's were all entered differently as well.
+
+5. Now that you can see the responses, how might you recommend rephrasing this or question or the response options in a future survey?
+I would ensure to enter a restriction on how to enter the data in a way that will give us more consistent results. For example, for height I would add a section where you enter your height in FEET and INCHES (also state to round to the fullest inch, no decimals).
+
+6. Is there anything that surprised you about the survey responses?
+I'm surprised some people actually skipped some answers... but it was expected.
+
+7. Looking at the responses to questions 1 and 5, are there any ideas you might try to include in your morning routine, or any questions that you are also curious about?
+N/A
+
+8. Pretend you are the instructor. Is there anything you can learn from this survey to help in how you approach teaching this class?
+Restrictions are our best friend, we cannot assume people KNOW. Also maybe go over how to create a better structured survey.
+
+9. Again, pretend you are the instructor. Do you think it was helpful or not helpful to make this survey anonymous? Why or why not? (If you can see both pros and cons, you may include both.)
+It's helpful in the aspect that no personal information was leaked. This was a mock survey so we didn't need to necessarily know what answers belonged to who.
