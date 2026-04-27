@@ -59,14 +59,21 @@ WHERE bottle_qty > 12 AND vendor ILIKE '%Bacar%'
 -- keyword (e.g., 'Limited', 'Spiced'). What categories do they belong to?
 -- (Opportunity: Identifying niche product variants).
 
-SELECT category_name, item_description
+SELECT category_name, item_description, vendor_name
 FROM products
-WHERE vendor_name ILIKE '%Bacar%'
-GROUP BY category_name, item_description
-Order By 1 --AND item_description ILIKE '%Limi%'
+WHERE item_description ILIKE '%Limi%'
+	OR item_description ILIKE '%Spi%'
+	OR item_description ILIKE '%Yr%'
+	OR item_description ILIKE '%Reser%'
+	OR item_description ILIKE '%Orig%'
+	OR item_description ILIKE '%Exclusi%'
+	OR item_description ILIKE '%Spec%'
+	AND vendor_name ILIKE '%Bacar%'
+GROUP BY category_name, item_description, vendor_name
+Order By 3 ASC
 
--- I didn't find any specific keywords like Limited or Spiced but did  realize that all the ones that had "IMPORTED" 
--- in the category did have more selections and seem like specialized drinks
+-- I didn't find any specific keywords like Limited but did realize that all the ones that had "SPECIALTY", "FLAVORED", IMPORTED" or had a country in the category_name
+-- in the category did have more selections and seem like specialized drinks. 
 
 -- Aggregation
 
@@ -78,4 +85,5 @@ SELECT SUM(total) ::money AS Total_Sales_Revenue, (AVG(btl_price::numeric)::mone
 FROM sales
 WHERE vendor ILIKE '%Bacar%' -- $21,216,356.72 total sales revenut and $17.45 for average bottle price
 -- I was unable to AVG money so had to convert into numeric then back into money 
+
 
