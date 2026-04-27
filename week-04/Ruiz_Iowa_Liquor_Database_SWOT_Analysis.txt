@@ -86,6 +86,39 @@ FROM sales
 WHERE vendor ILIKE '%Bacar%' -- $21,216,356.72 total sales revenut and $17.45 for average bottle price
 -- I was unable to AVG money so had to convert into numeric then back into money 
 
+-- 5. How many transactions were recorded for each specific item description within your 
+-- chosen [Category]? Which specific product is the most frequently purchased? 
+-- (Strength: Identifying your "hero" product).
+-- Bacardi Superior Rum (28,786), Grey Goose Vodka (24,697), and Bacardi Limon (11,303) are the top selling products for Bacardi
+SELECT COUNT (*), description, vendor
+FROM sales
+WHERE vendor ILIKE '%Bacar%'
+GROUP BY description, vendor
+	ORDER BY count DESC
+
+-- 6. Which store generated the highest total revenue for your [Category/Vendor]? 2633 "Hy-vee #3 / Bdi / Des Moines", $983,828.66
+-- Which generated the lowest (but still greater than zero)? 4875, "Bani's", $14.22
+-- (Strength vs. Weakness: Identifying your best and worst retail partners). 
+
+SELECT sales.store, stores.name, SUM(sales.total)::money AS Total_Sales_Revenue
+FROM sales
+JOIN stores ON sales.store = stores.store
+WHERE  vendor ILIKE '%Bacar%' 
+GROUP BY sales.store, stores.name
+HAVING SUM(sales.total) > 0
+ORDER BY Total_Sales_Revenue DESC -- ASC to find the lowest
+
+-- 7. What is the total revenue for every vendor within your chosen [Category],
+-- sorted from highest to lowest? 
+-- (Threat: Identifying your top competitors in that space). 
+
+SELECT *
+FROM sales
+
+-- 8. Which stores had total sales revenue for your [Category/Vendor] exceeding $2,000? 
+-- (Hint: Use HAVING to filter aggregated store totals). 
+-- (Strength: Pinpointing high-performing retail locations).
+
 
 
 
