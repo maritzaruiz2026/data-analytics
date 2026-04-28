@@ -158,6 +158,14 @@ ORDER BY 2 DESC;
 
 -- 10. List all transactions where the state bottle cost was between $10 and $20 for 
 -- your [Category/Vendor]. -- (Opportunity: Analyzing performance in the "mid-tier" price bracket). 
+SELECT CASE
+	WHEN vendor ILIKE '%Bacar%'THEN 'Bacardi'
+	ELSE vendor
+	END AS new_vendor, state_btl_cost, total
+FROM sales
+WHERE vendor ILIKE '%Bacar%' --THEN 'Bacardi'
+AND state_btl_cost::numeric BETWEEN 10 AND 20
+ORDER BY 1 DESC; -- ASC to find the lowest
 
 -- 11. Write a query that displays each store's total sales for your [Category/Vendor] 
 -- along with the store's name and address from the stores_table. 
