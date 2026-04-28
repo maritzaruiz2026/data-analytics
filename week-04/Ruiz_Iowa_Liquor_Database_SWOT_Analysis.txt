@@ -111,14 +111,75 @@ ORDER BY Total_Sales_Revenue DESC -- ASC to find the lowest
 -- 7. What is the total revenue for every vendor within your chosen [Category],
 -- sorted from highest to lowest? 
 -- (Threat: Identifying your top competitors in that space). 
+/* "Diageo Americas"	"$84,264,824.47"
+"Jim Beam Brands"	"$31,493,762.83"
+"Pernod Ricard USA/Austin Nichols"	"$28,157,424.53"
+"Brown-Forman Corporation"	"$25,449,644.59"
+"Luxco-St Louis"	"$24,116,582.09"
+"Constellation Wine Company Inc."	"$23,052,884.38" 
+are all vendors tthat have a total sales revenue higher than Bacardi, therefore competitors*/
 
-SELECT *
+SELECT CASE
+	WHEN vendor ILIKE '%Bacar%'THEN 'Bacardi'
+	ELSE vendor
+	END AS new_vendor, 
+SUM(sales.total)::money AS Total_Sales_Revenue
 FROM sales
+GROUP BY 
+	CASE	
+		WHEN vendor ILIKE '%Bacar%'THEN 'Bacardi'
+		ELSE vendor
+	END
+HAVING SUM(sales.total) > 0
+ORDER BY Total_Sales_Revenue DESC; -- ASC to find the lowest
 
--- 8. Which stores had total sales revenue for your [Category/Vendor] exceeding $2,000? 
+-- 8. Which stores had total sales revenue for your [Category/Vendor] exceeding $2,000? 930 total stores
 -- (Hint: Use HAVING to filter aggregated store totals). 
 -- (Strength: Pinpointing high-performing retail locations).
 
+SELECT sales.store, stores.name, SUM(sales.total)::money AS Total_Sales_Revenue
+FROM sales
+JOIN stores ON sales.store = stores.store
+WHERE  vendor ILIKE '%Bacar%' 
+GROUP BY sales.store, stores.name
+HAVING SUM(sales.total) > 2000
+ORDER BY Total_Sales_Revenue DESC 
 
+-- Joins 
+-- 9. Find all sales records where the category_name is either your chosen category 
+-- or a closely related competitor category (e.g., 'VODKA 80 PROOF' vs 'IMPORTED VODKA'). 
+-- (Threat: Comparing performance against direct substitutes). 
+
+SELECT category_name, COUNT(item) AS Category_Quantity, SUM(total) AS Total_Sales_Revenue
+FROM sales
+WHERE  vendor ILIKE '%Bacar%' 
+GROUP BY category_name 
+ORDER BY 2 DESC;
+
+-- 10. List all transactions where the state bottle cost was between $10 and $20 for 
+-- your [Category/Vendor]. -- (Opportunity: Analyzing performance in the "mid-tier" price bracket). 
+
+-- 11. Write a query that displays each store's total sales for your [Category/Vendor] 
+-- along with the store's name and address from the stores_table. 
+-- (Strength: Mapping your physical sales footprint). 
+
+-- 12. For each sale in your [Category], display the transaction date, total amount, 
+-- and the population of the county where the sale occurred by joining with counties_table.
+-- (Opportunity: Correlating sales volume with population density). 
+
+-- 13. Write a query that shows total sales for your [Category/Vendor] by county. 
+-- Which county generates the most revenue for you? 
+-- (Strength: Identifying your geographic stronghold). 
+
+-- 14. Join the sales_table and products_table to show total revenue for your [Vendor] 
+-- alongside the proof and pack size of the items. 
+-- (Strength: Determining if higher proof or larger packs drive more revenue). 
+
+-- 15. Are there any counties in the counties_table that have a population over 10,000 
+-- but zero sales for your [Category/Vendor]? -- (Opportunity: Identifying untapped markets). 
+
+-- 16. Display total revenue for your [Category/Vendor] grouped by the store_status 
+-- (from stores_table). Are active stores ('A') performing significantly better than others? 
+-- (Threat: Assessing the risk of sales tied to inactive or closed locations).
 
 
