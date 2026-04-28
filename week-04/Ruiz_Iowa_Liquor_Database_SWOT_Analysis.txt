@@ -149,6 +149,7 @@ ORDER BY Total_Sales_Revenue DESC
 -- 9. Find all sales records where the category_name is either your chosen category 
 -- or a closely related competitor category (e.g., 'VODKA 80 PROOF' vs 'IMPORTED VODKA'). 
 -- (Threat: Comparing performance against direct substitutes). 
+-- compare top three categories values vs all other brands to see competitors and where Brandi ranks among those in those categories
 
 SELECT category_name, COUNT(item) AS Category_Quantity, SUM(total) AS Total_Sales_Revenue
 FROM sales
@@ -170,24 +171,136 @@ ORDER BY 1 DESC; -- ASC to find the lowest
 -- 11. Write a query that displays each store's total sales for your [Category/Vendor] 
 -- along with the store's name and address from the stores_table. 
 -- (Strength: Mapping your physical sales footprint). 
+SELECT stores.name, stores.store_address, SUM(sales.total) AS Total_Sales_Revenue
+FROM stores
+JOIN sales ON sales.store = stores.store
+WHERE  vendor ILIKE '%Bacar%' 
+GROUP BY stores.name, stores.store_address
+ORDER BY 3 DESC;
 
 -- 12. For each sale in your [Category], display the transaction date, total amount, 
 -- and the population of the county where the sale occurred by joining with counties_table.
 -- (Opportunity: Correlating sales volume with population density). 
+SELECT sales.date, SUM(sales.total)::money AS Total_Sales_Revenue, counties.county, counties.population
+FROM sales
+JOIN counties ON sales.county = counties.county
+WHERE  vendor ILIKE '%Bacar%' 
+GROUP BY counties.county, counties.population, sales.date
+ORDER BY Total_Sales_Revenue DESC, sales.date;
 
 -- 13. Write a query that shows total sales for your [Category/Vendor] by county. 
 -- Which county generates the most revenue for you? 
--- (Strength: Identifying your geographic stronghold). 
+-- (Strength: Identifying your geographic stronghold).
+SELECT SUM(sales.total)::money AS Total_Sales_Revenue_By_County, counties.county, counties.population
+FROM sales
+JOIN counties ON sales.county = counties.county
+WHERE  vendor ILIKE '%Bacar%' 
+GROUP BY counties.county, counties.population
+ORDER BY Total_Sales_Revenue_By_County DESC;
 
 -- 14. Join the sales_table and products_table to show total revenue for your [Vendor] 
 -- alongside the proof and pack size of the items. 
 -- (Strength: Determining if higher proof or larger packs drive more revenue). 
+SELECT sales.item, 
+TRIM(REGEXP_REPLACE(REGEXP_REPLACE(products.item_description, '''', ''), 
+'\s+', ' ')) AS clean_description, SUM(sales.total)::money AS Total_Sales_Revenue_For_Bacardi, products.proof, products.pack, products.inner_pack
+FROM sales
+JOIN products ON sales.item = products.item_no
+WHERE products.vendor_name ILIKE '%Bacar%' 
+GROUP BY sales.item, TRIM(
+        REGEXP_REPLACE(
+            REGEXP_REPLACE(products.item_description, '''', ''),
+        '\s+', ' ')
+    ), sales.description, products.proof, products.pack, products.inner_pack
+ORDER BY sales.item ASC;
+
+-- was attempting to combine liked clean description so I inputted my query above into Copilot and got this:
+SELECT 
+    sales.item,
+    LOWER( TRIM( REGEXP_REPLACE(
+                REGEXP_REPLACE(products.item_description, '''', '', 'g'),
+            '\s+', ' ', 'g')   )  ) AS clean_description,
+    SUM(sales.total)::money AS total_sales_revenue_for_bacardi,
+    products.proof,
+    products.pack,
+    products.inner_pack
+FROM sales
+JOIN products 
+    ON sales.item = products.item_no
+WHERE products.vendor_name ILIKE '%Bacar%'
+GROUP BY 
+    sales.item,
+    LOWER( TRIM( REGEXP_REPLACE(   REGEXP_REPLACE(products.item_description, '''', '', 'g'),
+            '\s+', ' ', 'g')  )    ),
+    products.proof,
+    products.pack,
+    products.inner_pack
+ORDER BY sales.item;
+
+-- it did result in 129 vs 134 rows. It grouped item, clean_description, proof, pack and inner_pack
+-- The LOWER() function in SQL converts all uppercase characters in a given string to lowercase
+-- In SQL, the TRIM() function is primarily used to remove leading and trailing space characters (whitespace) 
+-- from a string, which I used to remove extra spaces, and ' in the item's description to group together
+
 
 -- 15. Are there any counties in the counties_table that have a population over 10,000 
--- but zero sales for your [Category/Vendor]? -- (Opportunity: Identifying untapped markets). 
+-- but zero sales for your [Category/Vendor]? -- (Opportunity: Identifying untapped markets)
+SELECT SUM(sales.total)::money AS Total_Sales_Revenue_By_County, counties.county, counties.population
+FROM counties
+JOIN sales ON counties.county = sales.county
+ AND sales.vendor ILIKE '%Bacar%' 
+	WHERE counties.population > 10000
+GROUP BY counties.county, counties.population
+ORDER BY Total_Sales_Revenue_By_County DESC;
+
+--  What Copilot said  to get results of a zero sales (results in 0)
+SELECT 
+    c.county,
+    c.population,
+    s.total_sales::money AS total_sales_revenue_by_county
+FROM counties c
+LEFT JOIN (
+    SELECT 
+        county,
+        SUM(total) AS total_sales
+    FROM sales
+    WHERE vendor ILIKE '%Bacar%'
+    GROUP BY county
+) s ON c.county = s.county
+WHERE c.population > 10000
+  AND s.total_sales IS NULL
+ORDER BY c.county;
+
+-- my corrected Query
+SELECT sales.total_sales::money AS Total_Sales_Revenue_By_County, counties.county, counties.population
+FROM counties 
+LEFT JOIN (SELECT county, SUM(total) AS total_sales
+    FROM sales
+    WHERE vendor ILIKE '%Bacar%'
+    GROUP BY county) sales ON counties.county = sales.county
+WHERE counties.population > 10000
+-- AND sales.total_sales IS NULL -- will result in counties with 0 sales
+AND sales.total_sales = 0
+ORDER BY Total_Sales_Revenue_By_County DESC;
 
 -- 16. Display total revenue for your [Category/Vendor] grouped by the store_status 
 -- (from stores_table). Are active stores ('A') performing significantly better than others? 
 -- (Threat: Assessing the risk of sales tied to inactive or closed locations).
 
+-- Subqueries 
+
+-- 17. Using a subquery, find all transactions for your [Category/Vendor] from stores
+-- located in a specific high-growth city (e.g., 'Des Moines') found in the stores_table. 
+-- (Opportunity: Drilling down into urban market performance). 
+
+-- 18. Which stores had total sales for your [Category/Vendor] that were above the 
+-- average store revenue for that same group? (Hint: Use a subquery for the average). 
+-- (Strength: Identifying stores that are over-performing). 
+
+-- 19. Find the top 5 highest-grossing items for your [Vendor], then use a subquery 
+-- to look up their full details (like case_cost and proof) from the products_table. 
+-- (Strength: Deep-dive into the specs of your most profitable inventory). 
+
+-- 20. Write a query using a subquery to find all sales records for your [Category] 
+-- from stores that have an 'A' (Active) status in the stores_table.
 
