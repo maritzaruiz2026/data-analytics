@@ -28,6 +28,7 @@ ON item_no = item
 WHERE vendor_name ILIKE '%Bacar%'
 ORDER BY 1
 	
+-- 12 questions required
 
 -- Name: Maritza Ruiz, Category/Vendor of Choice: Bacardi
 
@@ -36,13 +37,40 @@ ORDER BY 1
 -- the last quarter of 2014, sorted by the total sale amount from highest to lowest. 
 -- (Strength: Identifying high-volume peak periods).
 
-SELECT *
+-- Overall top sales of last quarter of 2014 for Bacardi
+SELECT date, store, county_number, county, category_name, vendor, item, description, total::money
 FROM sales
 WHERE vendor ILIKE '%Bacar%'
-	AND date BETWEEN '2014-10-01' AND '2014-12-31' -- cannot use QUARTER function from MYSQL
+ AND DATE_TRUNC('quarter', date) = DATE_TRUNC('quarter', DATE '2014-10-01')
+	--AND DATE_PART('year', date) = 2014
+	--AND DATE_PART('month', date) IN (10,11,12)
+	-- AND date BETWEEN '2014-10-01' AND '2014-12-31' -- cannot use QUARTER function from MYSQL
+-- Result: 2024-04-01 00:00:00
 ORDER BY total DESC;
 
--- will export into MySQL and rerun queries and do any alterations as needed, importing is currenlty taking a long time so will run all queries on PGAdmin
+-- similar to top but all transactions for all brands in comarison to Bacardi
+SELECT date, store, county_number, county, category_name, vendor, item, description, SUM(total::money) AS Total_Revenue_By_Vendor
+FROM sales
+	WHERE date BETWEEN '2014-10-01' AND '2014-12-31' -- cannot use QUARTER function from MYSQL
+	GROUP BY vendor
+ORDER BY Total_Revenue_By_Vendor DESC;
+
+-- total sales per vendor in the last quarter of 2014
+SELECT vendor, SUM(total::money) AS Total_Revenue_By_Vendor
+FROM sales
+WHERE date BETWEEN '2014-10-01' AND '2014-12-31'
+GROUP BY vendor
+ORDER BY Total_Revenue_By_Vendor DESC;
+
+-- This shows all sales across all vendors
+SELECT date, store, county_number, county, category_name, vendor, item, description, total
+FROM sales
+WHERE DATE_TRUNC('quarter', date) = DATE_TRUNC('quarter', DATE '2014-10-01')
+	--AND DATE_PART('year', date) = 2014
+	--AND DATE_PART('month', date) IN (10,11,12)
+	-- AND date BETWEEN '2014-10-01' AND '2014-12-31' -- cannot use QUARTER function from MYSQL
+-- Result: 2024-04-01 00:00:00
+ORDER BY total DESC;
 
 
 -- 2. Which transactions for your [Category/Vendor] had a bottle quantity greater than 12?
@@ -59,6 +87,9 @@ WHERE bottle_qty > 12 AND vendor ILIKE '%Bacar%'
 -- keyword (e.g., 'Limited', 'Spiced'). What categories do they belong to?
 -- (Opportunity: Identifying niche product variants).
 
+-- I didn't find any specific keywords like Limited but did realize that all the ones that had "SPECIALTY", "FLAVORED", IMPORTED" or had a country in the category_name
+-- in the category did have more selections and seem like specialized drinks. 
+
 SELECT category_name, item_description, vendor_name
 FROM products
 WHERE (item_description ILIKE '%Limi%'
@@ -72,8 +103,35 @@ WHERE (item_description ILIKE '%Limi%'
 GROUP BY category_name, item_description, vendor_name
 Order By 3 ASC
 
--- I didn't find any specific keywords like Limited but did realize that all the ones that had "SPECIALTY", "FLAVORED", IMPORTED" or had a country in the category_name
--- in the category did have more selections and seem like specialized drinks. 
+-- used the top query but identified which product has the highest sales compared to others based on category_name for 2014
+SELECT products.category_name, products.item_description, products.vendor_name, SUM(sales.total)
+FROM products
+JOIN sales ON products.item_no = sales.item
+WHERE (products.item_description ILIKE '%Limi%'
+	OR products.item_description ILIKE '%Spi%'
+	OR products.item_description ILIKE '%Yr%'
+	OR products.item_description ILIKE '%Reser%'
+	OR products.item_description ILIKE '%Orig%'
+	OR products.item_description ILIKE '%Exclusi%'
+	OR products.item_description ILIKE '%Spec%')
+	AND products.vendor_name ILIKE '%Bac%'
+GROUP BY products.category_name, products.item_description, products.vendor_name
+Order By 4 DESC;
+
+-- used the top query but identified which product has the highest sales compared to others based on category_name for 2014
+SELECT products.category_name, products.item_description, products.vendor_name, SUM(sales.total)
+FROM products
+JOIN sales ON products.item_no = sales.item
+WHERE (products.category_name = 'SCOTCH WHISKIES'
+	OR products.category_name = 'PUERTO RICO & VIRGIN ISLANDS RUM'
+	OR products.category_name = 'IMPORTED DRY GINS'
+	OR products.category_name = 'FLAVORED RUM')
+	--OR products.item_description ILIKE '%Orig%'
+	--OR products.item_description ILIKE '%Exclusi%'
+	--OR products.item_description ILIKE '%Spec%')
+	--AND products.vendor_name ILIKE '%Bac%'
+GROUP BY products.category_name, products.item_description, products.vendor_name
+Order BY 1, 4 DESC;
 
 -- Aggregation
 
