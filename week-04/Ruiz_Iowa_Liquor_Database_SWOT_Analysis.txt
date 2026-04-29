@@ -286,6 +286,47 @@ ORDER BY Total_Sales_Revenue_By_County DESC;
 -- 16. Display total revenue for your [Category/Vendor] grouped by the store_status 
 -- (from stores_table). Are active stores ('A') performing significantly better than others? 
 -- (Threat: Assessing the risk of sales tied to inactive or closed locations).
+SELECT SUM(sales.total)::money AS Total_Sales_Revenue, stores.store_status
+FROM sales
+JOIN stores ON sales.store = stores.store
+WHERE vendor ILIKE '%Bacar%' 
+-- stores.store_status = 'I' -- No results come up
+GROUP BY stores.store_status
+ORDER BY Total_Sales_Revenue DESC;
+
+
+
+SELECT SUM(sales.total)::money AS Total_Sales_Revenue, stores.store_status
+FROM sales
+JOIN stores ON sales.store = stores.store 
+GROUP BY stores.store_status
+ORDER BY Total_Sales_Revenue DESC;
+-- LEFT JOIN to show all 
+SELECT 
+    stores.store_status,
+    SUM(sales.total)::money AS total_sales_revenue
+FROM stores
+JOIN sales 
+    ON stores.store = sales.store
+    --AND sales.vendor ILIKE '%Bacar%'
+GROUP BY stores.store_status
+ORDER BY total_sales_revenue DESC;
+
+SELECT stores.store_status, stores.name, sales.vendor
+FROM stores
+JOIN sales ON stores.store = sales.store
+GROUP BY stores.store_status, stores.name, sales.vendor
+ORDER BY sales.vendor ASC;
+
+SELECT stores.store_status,
+    stores.name,
+    sales.vendor
+FROM stores
+LEFT JOIN sales 
+    ON stores.store = sales.store
+WHERE stores.store_status = 'I'
+GROUP BY stores.store_status, stores.name, sales.vendor
+ORDER BY sales.vendor ASC; -- This table results all the store_status with Inactive or I in the store status. All vendor's are NULL. 
 
 -- Subqueries 
 
