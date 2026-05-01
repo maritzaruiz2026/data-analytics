@@ -212,7 +212,27 @@ SELECT COUNT (*), description, vendor
 FROM sales
 WHERE vendor ILIKE '%Bacar%'
 GROUP BY description, vendor
-	ORDER BY count DESC
+	ORDER BY count DESC;
+	
+-- used this to determine the lowest product sold
+
+
+SELECT COUNT(*), item, description, btl_price,
+    CASE 
+    WHEN vendor ILIKE '%Bacar%' THEN 'Bacardi'
+    ELSE vendor
+    END AS vendor_clean
+FROM sales
+WHERE vendor ILIKE '%Bacar%'
+GROUP BY item, description, btl_price,
+    CASE 
+        WHEN vendor ILIKE '%Bacar%' THEN 'Bacardi'
+        ELSE vendor
+    END
+ORDER BY 1 ASC;
+
+	
+
 
 -- 6. Which store generated the highest total revenue for your [Category/Vendor]? 2633 "Hy-vee #3 / Bdi / Des Moines", $983,828.66
 -- Which generated the lowest (but still greater than zero)? 4875, "Bani's", $14.22
@@ -225,6 +245,17 @@ WHERE  vendor ILIKE '%Bacar%'
 GROUP BY sales.store, stores.name
 HAVING SUM(sales.total) > 0
 ORDER BY Total_Sales_Revenue DESC -- ASC to find the lowest
+
+-- stores with the least sales and the population in the area from store
+SELECT sales.store, stores.name, counties.county, counties.population, SUM(sales.total)::money AS Total_Sales_Revenue
+FROM sales
+JOIN stores ON sales.store = stores.store
+JOIN counties ON sales.county = counties.county
+WHERE  vendor ILIKE '%Bacar%' 
+GROUP BY sales.store, stores.name, counties.county, counties.population
+HAVING SUM(sales.total) > 0
+ORDER BY Total_Sales_Revenue ASC
+LIMIT 10;
 
 -- 7. What is the total revenue for every vendor within your chosen [Category],
 -- sorted from highest to lowest? 
@@ -362,7 +393,7 @@ ORDER BY sales.item;
 
 
 -- 15. Are there any counties in the counties_table that have a population over 10,000 
--- but zero sales for your [Category/Vendor]? -- (Opportunity: Identifying untapped markets)
+-- but zero sales for your [Category/Vendor]? -- (Opportunity: Identifying untapped markets) none
 SELECT SUM(sales.total)::money AS Total_Sales_Revenue_By_County, counties.county, counties.population
 FROM counties
 JOIN sales ON counties.county = sales.county
@@ -396,7 +427,7 @@ LEFT JOIN (SELECT county, SUM(total) AS total_sales
     FROM sales
     WHERE vendor ILIKE '%Bacar%'
     GROUP BY county) sales ON counties.county = sales.county
-WHERE counties.population > 10000
+-- WHERE counties.population > 10000
 -- AND sales.total_sales IS NULL -- will result in counties with 0 sales
 AND sales.total_sales = 0
 ORDER BY Total_Sales_Revenue_By_County DESC;

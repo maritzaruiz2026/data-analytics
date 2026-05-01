@@ -1,0 +1,26 @@
+total_sales_revenue_by_county,county,population
+$324.00 ,Fremont,7441
+"$2,608.64 ",Adams,4029
+"$2,640.79 ",Taylor,6317
+"$4,534.01 ",Ringgold,5131
+"$5,526.74 ",Davis,8753
+"$5,639.28 ",Keokuk,10511
+"$6,070.76 ",Van Buren,7570
+"$7,228.42 ",Wayne,6403
+"$8,675.94 ",Guthrie,10954
+"$9,257.56 ",Louisa,11387
+,,
+,,
+,,
+Row Labels,Sum of population,Sum of total_sales_revenue_by_county
+Wayne,6403,"$7,228.42 "
+Van Buren,7570,"$6,070.76 "
+Taylor,6317,"$2,640.79 "
+Ringgold,5131,"$4,534.01 "
+Louisa,11387,"$9,257.56 "
+Keokuk,10511,"$5,639.28 "
+Guthrie,10954,"$8,675.94 "
+Fremont,7441,$324.00 
+Davis,8753,"$5,526.74 "
+Adams,4029,"$2,608.64 "
+Grand Total,78496,"$52,506.14 "
