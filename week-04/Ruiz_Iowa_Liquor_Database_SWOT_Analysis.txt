@@ -48,12 +48,72 @@ WHERE vendor ILIKE '%Bacar%'
 -- Result: 2024-04-01 00:00:00
 ORDER BY total DESC;
 
+--- Q1
+SELECT date, store, county_number, county, category_name, vendor, item, description, total::money
+FROM sales
+WHERE vendor ILIKE '%Bacar%'
+ AND DATE_TRUNC('quarter', date) = DATE_TRUNC('quarter', DATE '2014-01-01')
+ORDER BY total DESC;
+
+-- Q2
+SELECT date, store, county_number, county, category_name, vendor, item, description, total::money
+FROM sales
+WHERE vendor ILIKE '%Bacar%'
+ AND DATE_TRUNC('quarter', date) = DATE_TRUNC('quarter', DATE '2014-04-01')
+ORDER BY total DESC;
+
+--- Q3
+SELECT date, store, county_number, county, category_name, vendor, item, description, total::money
+FROM sales
+WHERE vendor ILIKE '%Bacar%'
+ AND DATE_TRUNC('quarter', date) = DATE_TRUNC('quarter', DATE '2014-04-01')
+ORDER BY total DESC;
+
+-- Wanted to create a query where I can compare Bacardi quarter sales (side by side comparison)
+
+SELECT category_name,
+    SUM(CASE WHEN date >= '2014-01-01' AND date < '2014-04-01' 
+            THEN total 
+            ELSE 0 
+        END) AS q1_sales,
+    SUM(CASE WHEN date >= '2014-04-01' AND date < '2014-07-01' 
+            THEN total 
+            ELSE 0 
+        END) AS q2_sales,
+    SUM(CASE WHEN date >= '2014-07-01' AND date < '2014-10-01' 
+            THEN total 
+            ELSE 0 
+        END) AS q3_sales,
+    SUM(CASE WHEN date >= '2014-10-01' AND date < '2015-01-01' 
+            THEN total 
+            ELSE 0 
+        END) AS q4_sales
+FROM sales
+WHERE vendor ILIKE '%Bacar%'
+GROUP BY category_name
+ORDER BY category_name;
+
+-- Total Bacardi sales for all categories throughout the year
+
+SELECT DATE_TRUNC('week', date) AS week_start, SUM(total)::money AS bacardi_reveue
+FROM sales
+WHERE vendor ILIKE '%Bacar%'
+  AND date BETWEEN '2013-12-29' AND '2014-12-28'
+GROUP BY DATE_TRUNC('week', date)
+ORDER BY week_start;
+
+
+
+
+
 -- similar to top but all transactions for all brands in comarison to Bacardi
 SELECT date, store, county_number, county, category_name, vendor, item, description, SUM(total::money) AS Total_Revenue_By_Vendor
 FROM sales
 	WHERE date BETWEEN '2014-10-01' AND '2014-12-31' -- cannot use QUARTER function from MYSQL
 	GROUP BY vendor
 ORDER BY Total_Revenue_By_Vendor DESC;
+
+-- I waned to create a query 
 
 -- total sales per vendor in the last quarter of 2014
 SELECT vendor, SUM(total::money) AS Total_Revenue_By_Vendor
@@ -141,7 +201,7 @@ Order BY 1, 4 DESC;
 
 SELECT SUM(total) ::money AS Total_Sales_Revenue, (AVG(btl_price::numeric)::money) AS average_bottle_price
 FROM sales
-WHERE vendor ILIKE '%Bacar%' -- $21,216,356.72 total sales revenut and $17.45 for average bottle price
+WHERE vendor ILIKE '%Bacar%' -- $21,216,356.72 total sales revenue and $17.45 for average bottle price
 -- I was unable to AVG money so had to convert into numeric then back into money 
 
 -- 5. How many transactions were recorded for each specific item description within your 
@@ -224,7 +284,7 @@ SELECT CASE
 FROM sales
 WHERE vendor ILIKE '%Bacar%' --THEN 'Bacardi'
 AND state_btl_cost::numeric BETWEEN 10 AND 20
-ORDER BY 1 DESC; -- ASC to find the lowest
+ORDER BY 3 DESC; -- ASC to find the lowest
 
 -- 11. Write a query that displays each store's total sales for your [Category/Vendor] 
 -- along with the store's name and address from the stores_table. 
@@ -385,21 +445,4 @@ LEFT JOIN sales
 WHERE stores.store_status = 'I'
 GROUP BY stores.store_status, stores.name, sales.vendor
 ORDER BY sales.vendor ASC; -- This table results all the store_status with Inactive or I in the store status. All vendor's are NULL. 
-
--- Subqueries 
-
--- 17. Using a subquery, find all transactions for your [Category/Vendor] from stores
--- located in a specific high-growth city (e.g., 'Des Moines') found in the stores_table. 
--- (Opportunity: Drilling down into urban market performance). 
-
--- 18. Which stores had total sales for your [Category/Vendor] that were above the 
--- average store revenue for that same group? (Hint: Use a subquery for the average). 
--- (Strength: Identifying stores that are over-performing). 
-
--- 19. Find the top 5 highest-grossing items for your [Vendor], then use a subquery 
--- to look up their full details (like case_cost and proof) from the products_table. 
--- (Strength: Deep-dive into the specs of your most profitable inventory). 
-
--- 20. Write a query using a subquery to find all sales records for your [Category] 
--- from stores that have an 'A' (Active) status in the stores_table.
 
