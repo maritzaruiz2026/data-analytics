@@ -5,6 +5,7 @@ def calculate_tip_amount(bill_amount, tip_percentage):
     tip_amount = bill_amount * (tip_percentage / 100)
     return tip_amount
 
+
 bill_amount = 73.20
 tip_percentage = 15
 tip_amount = calculate_tip_amount(bill_amount, tip_percentage)
