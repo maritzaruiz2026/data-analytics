@@ -1,0 +1,20 @@
+∗ What does a value in this column represent? What values might you see here?
+In the categories table there are 8 rows that contain all different categories within the northwind dataset. Within those rows are 3 columns (CategoryID, CategoryName and Description). The CategoryID is the PK because it is a unique value.
+
+∗ Is this column a part of the primary key to this table?
+The first column (CategoryID) is the PK of the table. 
+
+∗ Is this column a part of a foreign key that points to a record in another table?
+Yes, it is a FK in the products table.
+
+∗ Would this column be valuable to bring into our Power BI Model? Yes, or no? Why?
+It would be valueable because it identifies the different products by number and connects different tables by the CategoryID.
+
+∗ Do you believe this column is appropriately named for Data Analysis purposes? jmnkmIf not, what might be a more appropriate name?
+Yes, I belive this is appropritately named.
+
+∗ What might be the data type and format for this column in a Power BI Model?
+I think it would be an integer since it is a whole number.
+
+∗ Can you think of any calculations where this column data might be used?
+To add up the products by category to determine which product has the  most sales (for example).
