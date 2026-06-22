@@ -1,5 +1,3 @@
-For the NutritionData Lab I was unable to succesfully create a Date hierarchy that included the Yeaar, Quarter, Month and Date. 
-I restarted from the beggining multiple times to see if maybe I missed a step and I could not figure it out. 
-I also attempted to manually create it but failed to include the Quarter. 
-Therefore, the graph in the NutritionData_Step05.pdf report had the x-axis not exact to what was in the Week 11 Lab Workbook. 
-I did ensure that the graph reflected what was expected based the lab.
+### NutritionData Lab Notes
+
+For the NutritionData Lab, I wasn’t able to successfully create a Date hierarchy that included Year, Quarter, Month, and Date. I restarted from the beginning multiple times to see if maybe I had missed a step, but I still couldn’t figure it out. I also tried to manually create it (the date hierarchy), but I wasn’t able to get Quarter included. Because of this issue, the graph in the NutritionData_Step05.pdf report didn’t have the x‑axis exactly like the one shown in the Week 11 Lab Workbook. I made sure the graph reflected what was expected based on the lab instructions.
